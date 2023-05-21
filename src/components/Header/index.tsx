@@ -9,7 +9,7 @@ const Header = () => {
     const { isAuthenticated, isLoading, user, logout } = useContext(AuthContext);
 
     return (
-        <div className="navbar bg-base-300 fixed top-0">
+        <div className="navbar bg-base-300 fixed top-0 z-50">
             <a href="/" className="flex-1 space-x-4">
                 <GiHollowCat className="text-2xl" />
                 <div className="normal-case text-xl">Pets Shelter</div>
@@ -27,6 +27,7 @@ const Header = () => {
                                 </label>
                                 <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
                                     {user && user.email && <li className="border-b-2 text-xl text-center">{user.email}</li>}
+                                    {user && user.role === "staff" && <li><a href="/pet/add">Add Pet</a></li>}
                                     <li><a href="/favorites">Favorites</a></li>
                                     <li><a href="/setting">Settings</a></li>
                                     <li>

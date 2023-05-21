@@ -51,13 +51,27 @@ export const addPet = async (name: string, age?: string, color?: string, breed?:
 
         const res = await axiosInstance.post("/pet", formData, {
             headers: {
-                // "Content-Type": "multipart/form-data",
+                "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${token}`,
             }
         });
         return res.data;
     } catch (error) {
         console.log("add pet error: ", error);
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.message, { position: "bottom-left" });
+        } else {
+            toast.error("System error, please try again later.", { position: "bottom-left" });
+        }
+    }
+}
+
+export const getPets = async () => {
+    try {
+        const res = await axiosInstance.get("/pets");
+        return res.data;
+    } catch (error) {
+        console.log("get pets list error: ", error);
         if (error instanceof AxiosError && error.response) {
             toast.error(error?.response?.data?.message, { position: "bottom-left" });
         } else {
