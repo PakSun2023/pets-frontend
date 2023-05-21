@@ -18,7 +18,7 @@ interface IAuthContext {
 
 const initAuthContext: IAuthContext = {
     isAuthenticated: false,
-    isLoading: true,
+    isLoading: false,
     user: null,
     login: async () => { },
     logout: () => { },

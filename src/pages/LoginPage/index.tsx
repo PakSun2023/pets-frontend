@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -12,7 +12,7 @@ const schema = yup.object({
 type FormData = yup.InferType<typeof schema>;
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
+  const { login, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
@@ -21,8 +21,11 @@ const Login = () => {
 
   const onSubmit = handleSubmit(async data => {
     await login(data.email, data.password);
-    navigate("/");
   })
+
+  useEffect(() => {
+    if (isAuthenticated) navigate("/");
+  }, [isAuthenticated]);
 
   return (
     <div className="hero h-screen bg-base-200">
