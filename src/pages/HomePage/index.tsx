@@ -13,7 +13,6 @@ const Home = () => {
   const fetchPets = async () => {
     const res = await getPets();
     if (res?.success) {
-      console.log(res);
       setPets(res?.petsData);
     }
   }
@@ -26,7 +25,7 @@ const Home = () => {
     <div className="bg-base-200 pt-20 px-28 pb-96">
       <div className='grid grid-cols-3'>
         {pets.map(pet => (
-          <div className="card w-96 bg-base-100 shadow-xl overflow-hidden">
+          <div key={pet._id} className="card w-96 bg-base-100 shadow-xl overflow-hidden">
             <div className="relative h-0 pb-48">
               {pet?.petImage ? (
                 <img

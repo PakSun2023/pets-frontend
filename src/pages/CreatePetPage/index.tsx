@@ -11,6 +11,7 @@ const schema = yup.object({
     color: yup.string().trim(),
     breed: yup.string().trim(),
     age: yup.string(),
+    description: yup.string().trim(),
     location: yup.string().trim().required("Please select your location."),
 }).required();
 type FormData = yup.InferType<typeof schema>;
@@ -72,6 +73,10 @@ const CreatePet = () => {
                         <div className='w-full flex justify-between items-center'>
                             <label htmlFor="">age (Optional)</label>
                             <input type="number" placeholder="pet age" className="input input-bordered w-full max-w-lg" {...register("age")} />
+                        </div>
+                        <div className='w-full flex justify-between items-center'>
+                            <label htmlFor="">description (Optional)</label>
+                            <textarea className="textarea textarea-bordered w-full max-w-lg" placeholder="description" {...register("description")} />
                         </div>
                         <div className='w-full flex justify-between items-center'>
                             <label htmlFor="">location</label>

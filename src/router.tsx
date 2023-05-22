@@ -5,6 +5,7 @@ import ErrorPage from "./pages/ErrorPage";
 import Login from "./pages/LoginPage";
 import Register from "./pages/RegisterPage";
 import CreatePet from "./pages/CreatePetPage";
+import DetailPage from "./pages/DetailPage";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     const token = window.localStorage.getItem("token");
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
                     <CreatePet />
                 </ProtectedRoute>,
             },
+            {
+                path: "/pet/:pid",
+                element: <DetailPage />,
+            }
         ],
     },
 ]);
