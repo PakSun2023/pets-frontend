@@ -34,7 +34,7 @@ export const userLogin = async (email: string, password: string) => {
     }
 }
 
-export const addPet = async (name: string, age?: string, color?: string, breed?: string, location?: string, photo?: File | null) => {
+export const addPet = async (name: string, age?: string, color?: string, breed?: string, location?: string, description?: string, photo?: File | null) => {
     try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -47,6 +47,7 @@ export const addPet = async (name: string, age?: string, color?: string, breed?:
         formData.append("color", color ?? "");
         formData.append("breed", breed ?? "");
         formData.append("location", location ?? "");
+        formData.append("description", description ?? "");
         if (photo) formData.append("petPhoto", photo);
 
         const res = await axiosInstance.post("/pet", formData, {

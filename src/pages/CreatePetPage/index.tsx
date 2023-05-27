@@ -26,8 +26,8 @@ const CreatePet = () => {
 
     const onSubmit = handleSubmit(async data => {
         setSubmitting(true);
-        const { name, age, color, breed, location } = data;
-        const res = await addPet(name, age, color, breed, location, petPhoto);
+        const { name, age, color, breed, location, description } = data;
+        const res = await addPet(name, age, color, breed, location, description, petPhoto);
 
         if (res?.success) {
             toast.success("Add new pet success", { position: "bottom-left" });
@@ -37,7 +37,8 @@ const CreatePet = () => {
                 color: "",
                 breed: "",
                 age: "",
-                location: ""
+                location: "",
+                description: "",
             });
         }
         setSubmitting(false);
