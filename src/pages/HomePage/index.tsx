@@ -32,7 +32,6 @@ const Home = () => {
 
   const handleFavorite = async (petId: string) => {
     const isFavorite = myList.find(p => p._id === petId);
-    console.log({isFavorite})
     if (isFavorite) {
       const res = await removePetFromMyFavorites(petId);
       if (res?.success) {

@@ -229,3 +229,95 @@ export const removePetFromMyFavorites = async (petId: string) => {
         }
     }
 }
+
+export const getMessagesByPet = async (petId: string) => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Unauthorize action, please login and try again.", { position: "bottom-left" });
+        }
+
+        const res = await axiosInstance.get(`/user/messages/${petId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return res.data;
+    } catch (error) {
+        console.log("get messages error: ", error);
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.message, { position: "bottom-left" });
+        } else {
+            toast.error("System error, please try again later.", { position: "bottom-left" });
+        }
+    }
+}
+
+export const postMessage = async (petId: string, message: string) => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Unauthorize action, please login and try again.", { position: "bottom-left" });
+        }
+
+        const res = await axiosInstance.post(`/user/messages/${petId}`, { message }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return res.data;
+    } catch (error) {
+        console.log("post message error: ", error);
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.message, { position: "bottom-left" });
+        } else {
+            toast.error("System error, please try again later.", { position: "bottom-left" });
+        }
+    }
+}
+
+export const replyMessage = async (msgId: string, message: string) => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Unauthorize action, please login and try again.", { position: "bottom-left" });
+        }
+
+        const res = await axiosInstance.put(`/user/messages/${msgId}`, { message }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return res.data;
+    } catch (error) {
+        console.log("reply message error: ", error);
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.message, { position: "bottom-left" });
+        } else {
+            toast.error("System error, please try again later.", { position: "bottom-left" });
+        }
+    }
+}
+
+export const deleteMessage = async (msgId: string) => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Unauthorize action, please login and try again.", { position: "bottom-left" });
+        }
+
+        const res = await axiosInstance.delete(`/user/messages/${msgId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return res.data;
+    } catch (error) {
+        console.log("delete message error: ", error);
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.message, { position: "bottom-left" });
+        } else {
+            toast.error("System error, please try again later.", { position: "bottom-left" });
+        }
+    }
+}

@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup"
 import toast from "react-hot-toast";
+import Messages from "./Messages";
 
 const schema = yup.object({
     name: yup.string().trim().required("Please enter a pet name or a temporary name."),
@@ -95,7 +96,6 @@ const DetailPage = () => {
         if (!pid) return;
 
         const isFavorite = myList.find(p => p._id === pid);
-        console.log({ isFavorite })
         if (isFavorite) {
             const res = await removePetFromMyFavorites(pid);
             if (res?.success) {
@@ -119,99 +119,103 @@ const DetailPage = () => {
             </div>
 
             {petInfo ?
-                <div className="card card-side bg-base-100 shadow-xl">
-                    <figure className="w-1/4 ml-5 relative">
-                        {isEditMode && <div className="absolute w-48 h-48 aspect-square rounded-full flex justify-center items-center bg-black/50">
-                            <label htmlFor="uploadPhoto">
-                                <div className="group w-12 h-12 rounded-full bg-white flex justify-center items-center cursor-pointer hover:bg-slate-400">
-                                    <AiOutlineUpload className="text-xl group-hover:text-white" />
-                                </div>
-                                <input type="file" id="uploadPhoto" className="hidden" onChange={e => setPetPhoto(e.target.files?.[0])} accept="image/*" />
-                            </label>
-                        </div>}
-                        {petInfo?.petImage ?
-                            <img className="object-contain mx-auto my-2 border-2 rounded-lg" src={`data:image/png;base64,${petInfo?.petImage}`} alt={petInfo.name} />
-                            : <div className="mx-auto my-2 border-2 rounded-lg bg-slate-400 flex justify-center items-center text-white">No Image</div>}
-                    </figure>
-                    <div className="card-body">
-                        {isEditMode ?
-                            <>
-                                <div className="flex flex-col gap-4 w-3/4">
-                                    <div className="w-full flex justify-between items-center">
-                                        <label htmlFor="">Name (Temporary)</label>
-                                        <input type="text" placeholder="pet name" className="input input-bordered w-full max-w-lg" {...register("name")} />
+                <>
+                    <div className="card card-side bg-base-100 shadow-xl">
+                        <figure className="w-1/4 ml-5 relative">
+                            {isEditMode && <div className="absolute w-48 h-48 aspect-square rounded-full flex justify-center items-center bg-black/50">
+                                <label htmlFor="uploadPhoto">
+                                    <div className="group w-12 h-12 rounded-full bg-white flex justify-center items-center cursor-pointer hover:bg-slate-400">
+                                        <AiOutlineUpload className="text-xl group-hover:text-white" />
                                     </div>
-                                    {errors && errors?.name?.message &&
-                                        <span className="text-red-500 text-xs text-end">{errors.name.message}</span>
-                                    }
-                                    <div className='w-full flex justify-between items-center'>
-                                        <label htmlFor="">description (Optional)</label>
-                                        <textarea className="textarea textarea-bordered w-full max-w-lg" placeholder="description" {...register("description")} />
-                                    </div>
-                                    <div className="w-full flex justify-between items-center">
-                                        <label htmlFor="">Color (Optional)</label>
-                                        <input type="text" placeholder="pet color" className="input input-bordered w-full max-w-lg" {...register("color")} />
-                                    </div>
-                                    <div className="w-full flex justify-between items-center">
-                                        <label htmlFor="">breed (Optional)</label>
-                                        <input type="text" placeholder="pet breed" className="input input-bordered w-full max-w-lg" {...register("breed")} />
-                                    </div>
-                                    <div className="w-full flex justify-between items-center">
-                                        <label htmlFor="">age (Optional)</label>
-                                        <input type="number" placeholder="pet age" className="input input-bordered w-full max-w-lg" {...register("age")} />
-                                    </div>
-                                    <div className="w-full flex justify-between items-center">
-                                        <label htmlFor="">location</label>
-                                        <select className="select select-bordered w-full max-w-lg" {...register("location")}>
-                                            <option disabled selected value="">Location</option>
-                                            {districts.map(d => (
-                                                <option key={d.code} value={d.code}>{d.name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="card-actions flex-1 items-end justify-end">
-                                    <button className={`btn btn-warning min-w-[200px] gap-4`} onClick={() => setIsEditMode(false)}>
-                                        <AiOutlineRollback className="text-xl" />
-                                        cancel
-                                    </button>
-                                    <button className={`btn btn-primary min-w-[200px] ${submitting ? "loading" : ""}`} onClick={onSubmit}>
-                                        update
-                                    </button>
-                                </div>
-                            </>
-                            : <>
-                                <div className="w-full flex justify-between items-start">
-                                    <h2 className="card-title text-4xl mb-4">{petInfo?.name}</h2>
-                                    {user && user.role === "staff" &&
-                                        <div>
-                                            <button className="btn btn-circle btn-outline border-0" onClick={() => setIsEditMode(true)}>
-                                                <AiOutlineEdit className="text-3xl" />
-                                            </button>
-                                            <button className="btn btn-circle btn-outline border-0 ml-2" onClick={() => setIsDeleting(true)}>
-                                                <AiOutlineDelete className="text-3xl" />
-                                            </button>
+                                    <input type="file" id="uploadPhoto" className="hidden" onChange={e => setPetPhoto(e.target.files?.[0])} accept="image/*" />
+                                </label>
+                            </div>}
+                            {petInfo?.petImage ?
+                                <img className="object-contain mx-auto my-2 border-2 rounded-lg" src={`data:image/png;base64,${petInfo?.petImage}`} alt={petInfo.name} />
+                                : <div className="mx-auto my-2 border-2 rounded-lg bg-slate-400 flex justify-center items-center text-white">No Image</div>}
+                        </figure>
+                        <div className="card-body">
+                            {isEditMode ?
+                                <>
+                                    <div className="flex flex-col gap-4 w-3/4">
+                                        <div className="w-full flex justify-between items-center">
+                                            <label htmlFor="">Name (Temporary)</label>
+                                            <input type="text" placeholder="pet name" className="input input-bordered w-full max-w-lg" {...register("name")} />
                                         </div>
-                                    }
-                                </div>
-                                <div className="flex flex-col space-y-4">
-                                    {petInfo?.description && <p>{petInfo?.description}</p>}
-                                    <p className="text-xl">Age: <span className="ml-4">{petInfo?.age}</span></p>
-                                    <p className="text-xl">Color: <span className="ml-4">{petInfo?.color}</span></p>
-                                    <p className="text-xl">Breed: <span className="ml-4">{petInfo?.breed}</span></p>
-                                    <p className="text-xl">Location: <span className="ml-4">{petInfo?.location && districts.find(d => d.code === petInfo.location)?.name}</span></p>
-                                </div>
-                                <div className="card-actions flex-1 items-end justify-end">
-                                    {user && <button className='border-0' onClick={() => handleFavorite()}>
-                                        {myList.findIndex(p => p._id === pid) >= 0 ?
-                                            <AiFillHeart className='text-3xl text-red-400' />
-                                            : <AiOutlineHeart className='text-3xl text-red-400' />
+                                        {errors && errors?.name?.message &&
+                                            <span className="text-red-500 text-xs text-end">{errors.name.message}</span>
                                         }
-                                    </button>}
-                                </div>
-                            </>}
+                                        <div className='w-full flex justify-between items-center'>
+                                            <label htmlFor="">description (Optional)</label>
+                                            <textarea className="textarea textarea-bordered w-full max-w-lg" placeholder="description" {...register("description")} />
+                                        </div>
+                                        <div className="w-full flex justify-between items-center">
+                                            <label htmlFor="">Color (Optional)</label>
+                                            <input type="text" placeholder="pet color" className="input input-bordered w-full max-w-lg" {...register("color")} />
+                                        </div>
+                                        <div className="w-full flex justify-between items-center">
+                                            <label htmlFor="">breed (Optional)</label>
+                                            <input type="text" placeholder="pet breed" className="input input-bordered w-full max-w-lg" {...register("breed")} />
+                                        </div>
+                                        <div className="w-full flex justify-between items-center">
+                                            <label htmlFor="">age (Optional)</label>
+                                            <input type="number" placeholder="pet age" className="input input-bordered w-full max-w-lg" {...register("age")} />
+                                        </div>
+                                        <div className="w-full flex justify-between items-center">
+                                            <label htmlFor="">location</label>
+                                            <select className="select select-bordered w-full max-w-lg" {...register("location")}>
+                                                <option disabled selected value="">Location</option>
+                                                {districts.map(d => (
+                                                    <option key={d.code} value={d.code}>{d.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="card-actions flex-1 items-end justify-end">
+                                        <button className={`btn btn-warning min-w-[200px] gap-4`} onClick={() => setIsEditMode(false)}>
+                                            <AiOutlineRollback className="text-xl" />
+                                            cancel
+                                        </button>
+                                        <button className={`btn btn-primary min-w-[200px] ${submitting ? "loading" : ""}`} onClick={onSubmit}>
+                                            update
+                                        </button>
+                                    </div>
+                                </>
+                                : <>
+                                    <div className="w-full flex justify-between items-start">
+                                        <h2 className="card-title text-4xl mb-4">{petInfo?.name}</h2>
+                                        {user && user.role === "staff" &&
+                                            <div>
+                                                <button className="btn btn-circle btn-outline border-0" onClick={() => setIsEditMode(true)}>
+                                                    <AiOutlineEdit className="text-3xl" />
+                                                </button>
+                                                <button className="btn btn-circle btn-outline border-0 ml-2" onClick={() => setIsDeleting(true)}>
+                                                    <AiOutlineDelete className="text-3xl" />
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div className="flex flex-col space-y-4">
+                                        {petInfo?.description && <p>{petInfo?.description}</p>}
+                                        <p className="text-xl">Age: <span className="ml-4">{petInfo?.age}</span></p>
+                                        <p className="text-xl">Color: <span className="ml-4">{petInfo?.color}</span></p>
+                                        <p className="text-xl">Breed: <span className="ml-4">{petInfo?.breed}</span></p>
+                                        <p className="text-xl">Location: <span className="ml-4">{petInfo?.location && districts.find(d => d.code === petInfo.location)?.name}</span></p>
+                                    </div>
+                                    <div className="card-actions flex-1 items-end justify-end">
+                                        {user && <button className='border-0' onClick={() => handleFavorite()}>
+                                            {myList.findIndex(p => p._id === pid) >= 0 ?
+                                                <AiFillHeart className='text-3xl text-red-400' />
+                                                : <AiOutlineHeart className='text-3xl text-red-400' />
+                                            }
+                                        </button>}
+                                    </div>
+                                </>}
+                        </div>
                     </div>
-                </div>
+
+                    <Messages />
+                </>
                 : null
             }
 
