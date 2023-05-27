@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import IPetType from "../../types/petType";
-import { deletePet, getPetDetail, updatePet } from "../../api";
+import { addPetToMyFavorites, deletePet, getMyFavorites, getPetDetail, removePetFromMyFavorites, updatePet } from "../../api";
 import { districts } from "../../utils/districts";
-import { AiOutlineDelete, AiOutlineEdit, AiOutlineHeart, AiOutlineRollback, AiOutlineUpload } from "react-icons/ai";
+import { AiFillHeart, AiOutlineDelete, AiOutlineEdit, AiOutlineHeart, AiOutlineRollback, AiOutlineUpload } from "react-icons/ai";
 import { AuthContext } from "../../context/authContext";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -29,6 +29,7 @@ const DetailPage = () => {
     const [petPhoto, setPetPhoto] = useState<File | null>();
     const [submitting, setSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [myList, setMyList] = useState<IPetType[]>([]);
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
         resolver: yupResolver(schema),
@@ -42,8 +43,18 @@ const DetailPage = () => {
         }
     }
 
+    const fetchMyList = async () => {
+        const res = await getMyFavorites();
+        if (res?.success) {
+            setMyList(res?.myFavoriteList);
+        }
+    }
+
     useEffect(() => {
-        if (pid) fetchPetInfo(pid);
+        if (pid) {
+            fetchPetInfo(pid);
+            fetchMyList();
+        }
     }, [pid]);
 
     useEffect(() => {
@@ -79,6 +90,24 @@ const DetailPage = () => {
             navigate("/");
         }
     };
+
+    const handleFavorite = async () => {
+        if (!pid) return;
+
+        const isFavorite = myList.find(p => p._id === pid);
+        console.log({ isFavorite })
+        if (isFavorite) {
+            const res = await removePetFromMyFavorites(pid);
+            if (res?.success) {
+                fetchMyList();
+            }
+        } else {
+            const res = await addPetToMyFavorites(pid);
+            if (res?.success) {
+                fetchMyList();
+            }
+        }
+    }
 
     return (
         <div className="bg-base-200 pt-20 px-10 pb-96">
@@ -173,7 +202,12 @@ const DetailPage = () => {
                                     <p className="text-xl">Location: <span className="ml-4">{petInfo?.location && districts.find(d => d.code === petInfo.location)?.name}</span></p>
                                 </div>
                                 <div className="card-actions flex-1 items-end justify-end">
-                                    {user && <button className="btn btn-circle btn-outline border-0"><AiOutlineHeart className="text-3xl text-red-400" /></button>}
+                                    {user && <button className='border-0' onClick={() => handleFavorite()}>
+                                        {myList.findIndex(p => p._id === pid) >= 0 ?
+                                            <AiFillHeart className='text-3xl text-red-400' />
+                                            : <AiOutlineHeart className='text-3xl text-red-400' />
+                                        }
+                                    </button>}
                                 </div>
                             </>}
                     </div>

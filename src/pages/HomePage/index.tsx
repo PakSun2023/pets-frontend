@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../context/authContext'
-import { getPets } from '../../api';
+import { addPetToMyFavorites, getMyFavorites, getPets, removePetFromMyFavorites } from '../../api';
 import IPetType from '../../types/petType';
 import { Link } from 'react-router-dom';
 import { districts } from '../../utils/districts';
-import {AiOutlineHeart} from 'react-icons/ai';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 
 const Home = () => {
   const { user } = useContext(AuthContext);
   const [pets, setPets] = useState<IPetType[]>([]);
+  const [myList, setMyList] = useState<IPetType[]>([]);
 
   const fetchPets = async () => {
     const res = await getPets();
@@ -17,9 +18,33 @@ const Home = () => {
     }
   }
 
+  const fetchMyList = async () => {
+    const res = await getMyFavorites();
+    if (res?.success) {
+      setMyList(res?.myFavoriteList);
+    }
+  }
+
   useEffect(() => {
     fetchPets();
+    fetchMyList();
   }, []);
+
+  const handleFavorite = async (petId: string) => {
+    const isFavorite = myList.find(p => p._id === petId);
+    console.log({isFavorite})
+    if (isFavorite) {
+      const res = await removePetFromMyFavorites(petId);
+      if (res?.success) {
+        fetchMyList();
+      }
+    } else {
+      const res = await addPetToMyFavorites(petId);
+      if (res?.success) {
+        fetchMyList();
+      }
+    }
+  }
 
   return (
     <div className="bg-base-200 pt-20 px-28 pb-96">
@@ -45,7 +70,12 @@ const Home = () => {
                 <p>Location: {districts.find(d => d.code === pet.location)?.name}</p>
               </div>
               <div className="card-actions justify-end">
-                {user && <button className='h-full mr-4'><AiOutlineHeart className='text-3xl text-red-400'/></button>}
+                {user && <button className='h-full mr-4' onClick={() => handleFavorite(pet._id)}>
+                  {myList.findIndex(p => p._id === pet._id) >= 0 ?
+                    <AiFillHeart className='text-3xl text-red-400' />
+                    : <AiOutlineHeart className='text-3xl text-red-400' />
+                  }
+                </button>}
                 <Link to={`/pet/${pet._id}`} className="btn btn-primary">Detail</Link>
               </div>
             </div>

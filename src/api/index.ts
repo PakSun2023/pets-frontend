@@ -159,3 +159,73 @@ export const deletePet = async (id: string) => {
         }
     }
 }
+
+export const getMyFavorites = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Unauthorize action, please login and try again.", { position: "bottom-left" });
+        }
+
+        const res = await axiosInstance.get('/user/myFavorites', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return res.data;
+    } catch (error) {
+        console.log("get my favorite list error: ", error);
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.message, { position: "bottom-left" });
+        } else {
+            toast.error("System error, please try again later.", { position: "bottom-left" });
+        }
+    }
+}
+
+export const addPetToMyFavorites = async (petId: string) => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Unauthorize action, please login and try again.", { position: "bottom-left" });
+        }
+
+        const res = await axiosInstance.put(`/user/myFavorites/${petId}`, {}, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return res.data;
+    } catch (error) {
+        console.log("update my favorite list error: ", error);
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.message, { position: "bottom-left" });
+        } else {
+            toast.error("System error, please try again later.", { position: "bottom-left" });
+        }
+    }
+}
+
+export const removePetFromMyFavorites = async (petId: string) => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Unauthorize action, please login and try again.", { position: "bottom-left" });
+        }
+
+        const res = await axiosInstance.delete(`/user/myFavorites/${petId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return res.data;
+    } catch (error) {
+        console.log("update my favorite list error: ", error);
+        if (error instanceof AxiosError && error.response) {
+            toast.error(error?.response?.data?.message, { position: "bottom-left" });
+        } else {
+            toast.error("System error, please try again later.", { position: "bottom-left" });
+        }
+    }
+}
