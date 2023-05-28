@@ -48,7 +48,7 @@ const MyFavorites = () => {
                                     <div className='w-1/6 aspect-square rounded-full border-[1px] border-black/10 overflow-hidden'>
                                         <img
                                             src={`data:image/png;base64,${pet.petImage}`} alt={pet.name}
-                                            className={`object-cover object-center`}
+                                            className='w-full h-full object-cover object-center'
                                         />
                                     </div>
                                 }
