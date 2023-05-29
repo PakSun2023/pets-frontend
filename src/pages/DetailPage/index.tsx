@@ -53,7 +53,9 @@ const DetailPage = () => {
 
     useEffect(() => {
         if (pid) {
-            fetchPetInfo(pid);
+            fetchPetInfo(pid);       
+        }
+        if (user) {
             fetchMyList();
         }
     }, [pid]);

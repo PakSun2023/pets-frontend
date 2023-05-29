@@ -11,6 +11,7 @@ const Home = () => {
   const { user } = useContext(AuthContext);
   const [pets, setPets] = useState<IPetType[]>([]);
   const [myList, setMyList] = useState<IPetType[]>([]);
+  const [filterList, setFilterList] = useState<IPetType[]>([]);
   const [sortBy, setSortBy] = useState<string | null>(null);
   const [location, setLocation] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -31,28 +32,32 @@ const Home = () => {
 
   useEffect(() => {
     fetchPets();
-    fetchMyList();
+    if (user) fetchMyList();
   }, []);
+
+  useEffect(() => {
+    setFilterList(pets);
+  }, [pets]);
 
   useEffect(() => {
     if (!sortBy) return;
     if (sortBy === "age_young") {
       const sortPets = [...pets].sort((a, b) => a.age - b.age);
-      setPets(sortPets);
+      setFilterList(sortPets);
     }
     if (sortBy === "age_old") {
       const sortPets = [...pets].sort((a, b) => b.age - a.age);
-      setPets(sortPets);
+      setFilterList(sortPets);
     }
   }, [sortBy]);
 
   useEffect(() => {
     if (!location) return;
     if (location === "all") {
-      fetchPets();
+      setFilterList(pets);
     } else {
       const filterPets = pets.filter(p => p.location === location);
-      setPets(filterPets);
+      setFilterList(filterPets);
     }
   }, [location]);
 
@@ -109,7 +114,7 @@ const Home = () => {
         </div>
       </div>
       <div className='grid grid-cols-3'>
-        {pets.map(pet => (
+        {filterList.map(pet => (
           <div key={pet._id} className="card w-96 bg-base-100 shadow-xl overflow-hidden">
             <div className="relative h-0 pb-48">
               {pet?.petImage ? (

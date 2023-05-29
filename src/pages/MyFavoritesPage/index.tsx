@@ -73,7 +73,7 @@ const MyFavorites = () => {
             {removePet.isRemove ?
                 <div className="modal modal-open">
                     <div className="modal-box">
-                        <h3 className="font-bold text-lg">Confirm this pet from your favorite list?</h3>
+                        <h3 className="font-bold text-lg">Confirm remove this pet from your favorite list?</h3>
                         <div className="modal-action">
                             <button className="btn btn-error" onClick={() => onDelete()}>Confirm</button>
                             <button className="btn btn-success" onClick={() => setRemovePet({ isRemove: false, petId: '' })}>Cancel</button>

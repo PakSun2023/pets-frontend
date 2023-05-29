@@ -56,7 +56,7 @@ const Messages = () => {
     }
 
     useEffect(() => {
-        if (pid) fetchMessages(pid);
+        if (pid && user) fetchMessages(pid);
     }, [pid]);
 
     const onDelete = async () => {
